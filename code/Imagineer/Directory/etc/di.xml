@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="Imagineer\Directory\Api\Data\CountyInformationInterface" type="Imagineer\Directory\Model\Data\CountyInformation" />
+    <preference for="Imagineer\Directory\Api\Data\DistrictInformationInterface" type="Imagineer\Directory\Model\Data\DistrictInformation" />
+    <preference for="Imagineer\Directory\Api\Data\TownInformationInterface" type="Imagineer\Directory\Model\Data\TownInformation" />
+    <preference for="Imagineer\Directory\Api\CountyInformationRepositoryInterface" type="Imagineer\Directory\Model\County" />
+    <preference for="Imagineer\Directory\Api\DistrictInformationRepositoryInterface" type="Imagineer\Directory\Model\District" />
+    <preference for="Imagineer\Directory\Api\TownInformationRepositoryInterface" type="Imagineer\Directory\Model\Town" />
+</config>

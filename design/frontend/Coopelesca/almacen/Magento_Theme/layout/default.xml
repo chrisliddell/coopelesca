@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- Address link -->
+        <referenceBlock name="customer-account-navigation-address-link" remove="true"/>
+
+        <!-- Downloadable product link -->
+        <referenceBlock name="customer-account-navigation-downloadable-products-link" remove="true"/>
+
+        <!-- Subscription link -->
+        <referenceBlock name="customer-account-navigation-newsletter-subscriptions-link" remove="true"/>
+
+        <!-- Billing agreement link -->
+        <referenceBlock name="customer-account-navigation-billing-agreements-link" remove="true"/>
+
+        <!-- Product review link -->
+        <referenceBlock name="customer-account-navigation-product-reviews-link" remove="true"/>
+
+        <!-- My credit card link -->
+        <referenceBlock name="customer-account-navigation-my-credit-cards-link" remove="true"/>        
+
+        <!-- Account edit link -->
+        <referenceBlock name="customer-account-navigation-account-edit-link" remove="true"/>
+
+        <!-- Store credit -->
+        <referenceBlock name="customer-account-navigation-customer-balance-link" remove="true"/>
+
+        <!-- Downloadable product link -->
+        <referenceBlock name="customer-account-navigation-downloadable-products-link" remove="true"/>
+
+        <!-- Subscription link -->
+        <referenceBlock name="customer-account-navigation-newsletter-subscriptions-link" remove="true"/>
+
+        <!-- Gift card link -->
+        <referenceBlock name="customer-account-navigation-gift-card-link" remove="true"/>
+
+        <!-- Order by SKU -->
+        <referenceBlock name="customer-account-navigation-checkout-sku-link" remove="true"/>
+
+        <!-- Gift registry -->
+        <referenceBlock name="customer-account-navigation-giftregistry-link" remove="true"/>
+
+        <!-- Reward points -->
+        <referenceBlock name="customer-account-navigation-reward-link" remove="true"/>
+
+         <!-- Invitation -->
+        <referenceBlock name="customer-account-navigation-magento-invitation-link-container" remove="true"/>
+
+
+        
+        <referenceContainer name="header.panel">
+            <block class="Magento\Framework\View\Element\Html\Links" name="header.links">
+                <arguments>
+                    <argument name="css_class" xsi:type="string">header links</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+        <referenceBlock name="logo">
+            <arguments>
+                <argument name="logo_img_width" xsi:type="number">152</argument>
+                <argument name="logo_img_height" xsi:type="number">35</argument>
+                <argument name="logo_file" xsi:type="string">images/coopelesca-almacenes-logo.png</argument>
+            </arguments>
+        </referenceBlock>    
+        <referenceContainer name="before.body.end">
+            <block class="Magento\Framework\View\Element\Template" name="beforebody"  template="Magento_Theme::html/beforebody.phtml"/>
+        </referenceContainer>
+        <referenceContainer name="footer">
+            <block class="Magento\Framework\View\Element\Template" name="custom.footer" template="Magento_Theme::html/custom_footer.phtml" />
+        </referenceContainer>
+        <move element="custom.footer" destination="footer" before="-" />
+        <move element="minicart" destination="header.panel" />
+        <move element="logo" destination="header.panel" />
+        <move element="top.search" destination="header.panel" />
+        <move element="authorization-link" destination="header.links" />
+        <move element="multiple-wish-list-link" destination="header.links" before="authorization-link" />
+        <referenceContainer name="legal" remove="true"/>
+        <referenceContainer name="copyright" remove="true"/>
+        <referenceBlock name="store_language" remove="true"/>
+        <referenceBlock name="report.bugs" remove="true"/>
+        <referenceBlock name="register-link" remove="true" />
+        <referenceBlock name="form.subscribe" remove="true"/>
+    <referenceBlock name="footer_links" remove="true" />
+    <attribute name="class" value="container-fluid" />
+    <referenceBlock name="sale.reorder.sidebar" remove="true"/>
+
+    <referenceContainer name="page.top">     
+     <block class="Magento\Theme\Block\Html\Breadcrumbs" name="breadcrumbs"/>
+    </referenceContainer>
+    
+    <referenceContainer name="header-wrapper">
+         <referenceBlock name="catalog.compare.link" remove="false"/>
+    </referenceContainer>
+
+    </body>
+</page>

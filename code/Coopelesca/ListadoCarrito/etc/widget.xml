@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:listadocarrito:Magento_Widget:etc/widget.xsd">
+    <widget class="Coopelesca\ListadoCarrito\Block\Widget\ListadoCarrito" id="coopelesca_listadocarrito_listado">
+        <label>Listado del carrito</label>
+        <description>Muestra un listado con lo que hay en el carrito</description>
+    </widget>
+</widgets>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <imagineer_custompayment>
+              <title>Imagineer Payment</title>
+              <model>Imagineer\CustomPayment\Model\ImagineerPayment</model>
+              <active>1</active>
+              <cctypes>AE,VI,MC,DI</cctypes>
+            </imagineer_custompayment>
+        </payment>
+    </default>
+</config>

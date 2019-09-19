@@ -1,0 +1,137 @@
+<?php /** @var \Experius\ExtraCheckoutAddressFields\Block\Customer\Widget\Custom $block */ 
+
+$om = \Magento\Framework\App\ObjectManager::getInstance();  
+$resolver = $om->get('Magento\Framework\Locale\Resolver');
+$langCode = $resolver->getLocale();
+$pos = strpos($langCode, "es");
+
+?>
+<?php $county = 'county'; ?>
+<?php $district = 'district'; ?>
+<?php $town = 'town'; ?>
+<div id="county_div"
+	class="field custom<?php if($block->isRequired($county)) echo ' required'; ?>">
+	<label class="label"
+		for="<?php echo $block->escapeHtml($block->getFieldId($county)); ?>">
+		<span><?php echo $block->escapeHtml($block->getFieldLabel($county)); ?></span>
+	</label>
+	<div class="control">
+		<select id="<?php echo $block->escapeHtml($block->getFieldId($county)); ?>" 
+				<?php if($block->isRequired($county)) echo ' class="required-entry"'; ?>
+				name="<?php echo $block->escapeHtml($block->getFieldId($county)); ?>"	
+				title="<?php echo $block->escapeHtml($block->getFieldLabel($county)); ?>" 			
+				<?php /* @escapeNotVerified */ echo $block->getFieldParams(); ?>
+				<?php if ($block->isRequired($county)) echo ' data-validate="{\'validate-select\':true}"'; ?>>
+				
+                <?php if(!$block->isNullRegion()): ?>
+    				<?php if($block->getValue($county)): ?>
+                        <?php foreach ($block->filterCounties() as $option): ?>
+    						<?php if($block->getValue($county) == $option['value']): ?>
+    	                        <option value="<?php echo $option['value']; ?>" selected><?php echo $option['label']; ?></option>
+    						<?php else: ?>						
+    	                        <option value="<?php echo $option['value']; ?>"><?php echo $option['label']; ?></option>
+    						<?php endif; ?>
+    					<?php endforeach; ?>				
+    				<?php else: ?>						
+                        <option value="<?php echo $block->filterCounties()[0]['value']; ?>"><?php echo $block->filterCounties()[0]['label']; ?></option>
+    				<?php endif; ?>
+                <?php else:
+                	if($pos !== false){ ?>
+                    <option value="">Por favor seleccione cantón.</option>
+              <?php }else{ ?>
+            		<option value="">Please select a canton.</option>
+              <?php }
+            endif; ?>     	
+		</select>
+	</div>
+</div>
+
+
+
+<?php /** @var \Experius\ExtraCheckoutAddressFields\Block\Customer\Widget\Custom $block */ ?>
+<div id="district_div"
+	class="field custom<?php if($block->isRequired($district)) echo ' required'; ?>">
+	<label class="label"
+		for="<?php echo $block->escapeHtml($block->getFieldId($district)); ?>">
+		<span><?php echo $block->escapeHtml($block->getFieldLabel($district)); ?></span>
+	</label>
+	<div class="control">
+		<select id="<?php echo $block->escapeHtml($block->getFieldId($district)); ?>" 
+				<?php if($block->isRequired($district)) echo ' class="required-entry"'; ?>
+				name="<?php echo $block->escapeHtml($block->getFieldId($district)); ?>"	
+				title="<?php echo $block->escapeHtml($block->getFieldLabel($district)); ?>" 			
+				<?php /* @escapeNotVerified */ echo $block->getFieldParams(); ?>
+				<?php if ($block->isRequired($district)) echo ' data-validate="{\'validate-select\':true}"'; ?>>
+
+
+				<?php if($block->getValue($district)): ?>
+					<?php foreach ($block->filterDistricts() as $option): ?>
+						<?php if($block->getValue($district) == $option['value']): ?>
+							<option value="<?php echo $option['value']; ?>" selected><?php echo $option['label']; ?></option>
+						<?php else: ?>						
+		        			<option value="<?php echo $option['value']; ?>"><?php echo $option['label']; ?></option>
+		        		<?php endif; ?>
+    				<?php endforeach; ?>
+				<?php else:
+                	if($pos !== false){ ?>
+                    <option value="">Por favor seleccione distrito.</option>
+              <?php }else{ ?>
+            		<option value="">Please select a district.</option>
+              <?php }
+            endif; ?> 		
+		</select>
+	</div>
+</div>
+
+
+<?php /** @var \Experius\ExtraCheckoutAddressFields\Block\Customer\Widget\Custom $block */ ?>
+<div id="town_div"
+	class="field custom<?php if($block->isRequired($town)) echo ' required'; ?>">
+	<label class="label"
+		for="<?php echo $block->escapeHtml($block->getFieldId($town)); ?>">
+		<span><?php echo $block->escapeHtml($block->getFieldLabel($town)); ?></span>
+	</label>
+	<div class="control">
+		<select id="<?php echo $block->escapeHtml($block->getFieldId($town)); ?>" 
+				<?php if($block->isRequired($town)) echo ' class="required-entry"'; ?>
+				name="<?php echo $block->escapeHtml($block->getFieldId($town)); ?>"	
+				title="<?php echo $block->escapeHtml($block->getFieldLabel($town)); ?>" 			
+				<?php /* @escapeNotVerified */ echo $block->getFieldParams(); ?>
+				<?php if ($block->isRequired($town)) echo ' data-validate="{\'validate-select\':true}"'; ?>>
+
+
+				<?php if($block->getValue($town)): ?>
+					<?php foreach ($block->filterTowns() as $option): ?>
+						<?php if($block->getValue($town) == $option['value']): ?>
+							<option value="<?php echo $option['value']; ?>" selected><?php echo $option['label']; ?></option>
+						<?php else: ?>						
+		        			<option value="<?php echo $option['value']; ?>"><?php echo $option['label']; ?></option>
+		        		<?php endif; ?>
+    				<?php endforeach; ?>
+				<?php else:
+                	if($pos !== false){ ?>
+                    <option value="">Por favor seleccione poblado.</option>
+              <?php }else{ ?>
+            		<option value="">Please select a town.</option>
+              <?php }
+            endif; ?>	
+		</select>
+	</div>
+</div>
+
+<script>
+
+		var county_div = document.getElementById("county_div");
+        var district_div = document.getElementById("district_div");
+        var town_div = document.getElementById("town_div");
+
+
+        region_id = document.getElementById("region_id");
+
+        region_id.parentNode.insertBefore(county_div, region_id.nextSibling);
+        county_div.parentNode.insertBefore(district_div, county_div.nextSibling);
+        district_div.parentNode.insertBefore(town_div, district_div.nextSibling);
+        $("input[name='postcode']").val("000000000");
+        $("div#shipping-new-address-form.fieldset.address div.field div input").css("display","none");
+
+</script>

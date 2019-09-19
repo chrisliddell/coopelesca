@@ -1,0 +1,46 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+<?php
+/**
+ * Top menu for store
+ *
+ * @var $block \Magento\Theme\Block\Html\Topmenu
+ */
+?>
+<?php $columnsLimit = $block->getColumnsLimit() ?: 0; ?>
+<?php $_menu = $block->getHtml('level-top', 'submenu', $columnsLimit) ?>
+
+<nav class="navigation" id="menu-coopelesca" data-action="navigation">
+	<ul class="menu-coopelesca">
+	   <?php 
+	    $om = \Magento\Framework\App\ObjectManager::getInstance();	
+		$resolver = $om->get('Magento\Framework\Locale\Resolver');
+		$langCode = $resolver->getLocale();
+		$pos = strpos($langCode, "es");
+		if((!($pos === false))){ ?>
+		 <li id="acciones-menu"><i class="fas fa-bars">&nbsp;</i><span id="menu-categorias">Categor&iacute;as</span><i class="linea-vertical">|</i></li> 
+        <?php 
+         echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('items-principal-es')->toHtml();
+	    }else{ ?>
+		 <li id="acciones-menu"><i class="menu-hamburguesa">&nbsp;</i><span id="menu-categorias">Categories</span><i class="fas fa-grip-lines-vertical"></i></li>  
+	    <?php 	
+         echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('items-principal-en')->toHtml();
+	    } ?>
+	</ul>
+    <?php 
+    if((!($pos === false))){
+    	echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('items-secundario-es')->toHtml();
+	}else{ 
+		echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('items-secundario-en')->toHtml();
+    } ?>
+	<ul id="categorias-iniciales" class="animated fadeIn col-lg-6">
+	<?= /* @escapeNotVerified */ $_menu ?>
+	</ul>
+</nav>	

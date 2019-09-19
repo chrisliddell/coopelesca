@@ -1,0 +1,43 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var \Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Info $block */
+
+/** @var \Magento\Wishlist\Model\Item $item */
+$item = $block->getItem();
+$product = $item->getProduct();
+$columns = $block->getColumns();
+$om = \Magento\Framework\App\ObjectManager::getInstance();  
+$resolver = $om->get('Magento\Framework\Locale\Resolver');
+$langCode = $resolver->getLocale();
+$pos = strpos($langCode, "es");
+
+?>
+<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+<strong class="product-item-name">
+    <a href="<?= $block->escapeUrl($block->getProductUrl($item)) ?>" title="<?= $block->escapeHtmlAttr($product->getName()) ?>" class="product-item-link">
+        <?= $block->escapeHtml($product->getName()) ?>
+    </a>
+</strong>
+<!-- AddToAny BEGIN -->
+<div class="a2a_kit a2a_kit_size_16 a2a_default_style" 
+     data-a2a-url="<?= $block->escapeUrl($block->getProductUrl($item)) ?>" data-a2a-title="<?= (!($pos === false)) ? 'Producto favorito: '.$block->escapeHtmlAttr($product->getName())  : 'Wishlist: '.$block->escapeHtmlAttr($product->getName()) ?> ">    
+<a class="a2a_button_facebook"></a>
+<a class="a2a_button_twitter"></a>
+</div>    
+<!-- AddToAny END -->
+<?php $compareHelper = $this->helper('Magento\Catalog\Helper\Product\Compare');?>
+<a id="comparaWish" href="#"
+   class="action tocompare"
+   title="<?= $block->escapeHtml(__('Add to Compare')) ?>"
+   aria-label="<?= $block->escapeHtml(__('Add to Compare')) ?>"
+   data-post='<?= /* @escapeNotVerified */ $compareHelper->getPostDataParams($product) ?>'
+   role="button">
+   <span><?=  __('Add to Compare') ?></span>
+</a>
+</div>

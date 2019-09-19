@@ -1,0 +1,105 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var $block \Magento\Catalog\Block\Product\View */
+$om = \Magento\Framework\App\ObjectManager::getInstance();  
+$resolver = $om->get('Magento\Framework\Locale\Resolver');
+$langCode = $resolver->getLocale();
+$pos = strpos($langCode, "es");
+?>
+<?php $_product = $block->getProduct(); ?>
+<?php $buttonTitle = __('Add to cart');
+ if( $pos !== false ){ 
+  $wishlist = 'Favoritos';
+  $compare = 'Comparar';
+ }else{ 
+  $wishlist = 'Wishlist';  
+  $compare = 'Compare';
+}  ?> 
+
+<?= $this->getLayout()
+          ->createBlock('Magento\Catalog\Pricing\Render',
+                  "product.price.final",
+                    [
+                        'data' => [
+                            'price_render' => 'product.price.render.default',
+                            'price_type_code' => 'final_price',
+                            'zone' => 'item_view'
+                        ]
+                   ]
+                  )
+          ->toHtml();
+
+$_compareUrl = $this->helper('Magento\Catalog\Helper\Product\Compare')->getPostDataParams($_product); ?>
+<div id="comparteMobile">  
+  <a  data-post='<?php  echo $this->helper('Magento\Wishlist\Helper\Data')->getAddParams($_product) ?>' class="action towishlist" data-action="add-to-wishlist"><i class="far fa-heart"></i><?= $wishlist ?></a>
+  <a  data-post='<?=  $_compareUrl ?>' class="action tocompare" data-action="add-to-links"><i class="comparte">&nbsp;</i><?= $compare ?></a>
+  
+  <!-- AddToAny BEGIN -->
+      <div id="detalleComparte" class="a2a_kit a2a_kit_size_32 a2a_default_style a2a_detalle">    
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_twitter"></a>
+      </div>
+  <script async src="https://static.addtoany.com/menu/page.js"></script>
+  <!-- AddToAny END -->
+</div>          
+<?php if ($_product->isSaleable()): ?>
+<div class="box-tocart">
+    <div class="fieldset">
+        <?php if ($block->shouldRenderQuantity()): ?>
+        <div class="field qty">
+            <label class="label" for="qty"><span><?= /* @escapeNotVerified */ __('Qty') ?></span></label>
+            <div class="control">
+                <input type="number"
+                       name="qty"
+                       id="qty"
+                       value="<?= /* @escapeNotVerified */ $block->getProductDefaultQty() * 1 ?>"
+                       title="<?= /* @escapeNotVerified */ __('Qty') ?>"
+                       class="input-text qty"
+                       data-validate="<?= $block->escapeHtml(json_encode($block->getQuantityValidators())) ?>"
+                       />
+                       <div id="wrapCantidad">
+                           <div id="mas" class="ctrlCantidad">+</div>
+                           <div id="menos" class="ctrlCantidad">-</div>
+                       </div>    
+
+            </div>
+        </div>
+        <?php endif; ?>
+        
+        <div class="actions">
+            <button type="submit"
+                    title="<?= /* @escapeNotVerified */ $buttonTitle ?>"
+                    class="action primary tocart"
+                    id="product-addtocart-button">
+                <span><?= /* @escapeNotVerified */ $buttonTitle ?></span>
+            </button>
+            <?= $block->getChildHtml('', true) ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+<?php if ($block->isRedirectToCartEnabled()) : ?>
+<script type="text/x-magento-init">
+    {
+        "#product_addtocart_form": {
+            "Magento_Catalog/product/view/validation": {
+                "radioCheckboxClosest": ".nested"
+            }
+        }
+    }
+</script>
+<?php else : ?>
+<script type="text/x-magento-init">
+    {
+        "#product_addtocart_form": {
+            "Magento_Catalog/js/validate-product": {}
+        }
+    }
+</script>
+<?php endif; ?>

@@ -1,0 +1,58 @@
+<?php
+// @codingStandardsIgnoreFile
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $objectManager->create('Magento\Customer\Model\Session');
+$_product = $block->getProduct();    
+$storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+$partes = explode($storeManager->getStore()->getCode(),"_");
+
+
+$om = \Magento\Framework\App\ObjectManager::getInstance();	
+$resolver = $om->get('Magento\Framework\Locale\Resolver');
+$langCode = $resolver->getLocale();
+$pos = strpos($langCode, "es");
+
+
+ if( $pos !== false ){ ?>
+	<div id="comparteDesktop"> 	
+		<h3> <?php echo __('Compartir'); ?></h3>
+		<?php }else{ ?>
+		<h3> <?php echo __('Share'); ?></h3>
+	<?php }  ?>	
+		<!-- AddToAny BEGIN -->
+				<div id="detalleComparte" class="a2a_kit a2a_kit_size_32 a2a_default_style a2a_detalle">		
+				<a class="a2a_button_facebook"></a>
+				<a class="a2a_button_twitter"></a>
+				</div>
+		<script async src="https://static.addtoany.com/menu/page.js"></script>
+		<!-- AddToAny END -->
+	</div>
+<?php 
+//Valores necesarios para cargar las diferentes opciones de envío para el producto
+ if(!(is_null($_product->getOrigData('peso'))) ){
+ 	$peso = explode(" ",$_product->getOrigData('peso'));
+ 	$peso_final = $peso[0];
+ }else{
+ 	$peso_final = 0;
+ }
+ if($customerSession->isLoggedIn()){
+  $id_cuenta = $customerSession->getCustomerId();
+  $cedula = $customerSession->getCustomer()->getCedula();
+ }else{
+  $id_cuenta = 0;	
+ }
+ 
+ if( $pos !== false ){ ?>
+ 	<h3 class="clearfix"><?= __("Métodos de pago") ?> </h3>
+ <?php  }else{  ?>
+    <h3 class="clearfix"><?= __("Payment methods") ?> </h3>
+ <?php 
+ }
+ ?>
+
+<img src="<?php echo $this->getViewFileUrl('Magento_Catalog::images/CoopelescaCredito.png'); ?>" />
+<img src="<?php echo $this->getViewFileUrl('Magento_Catalog::images/MasterCard.png'); ?>" />
+<img src="<?php echo $this->getViewFileUrl('Magento_Catalog::images/Visa.png'); ?>" />
+
+<div id="metodosEnvio" class="fadeIn animated row"></div>
+<script src="<?= $block->getViewFileUrl('Coopelesca_IngresoAsociados::js/carga-opciones-envio.js'); ?>" ></script>

@@ -1,0 +1,70 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/**
+ * @var \Magento\Theme\Block\Html\Header\Logo $block
+ */
+
+/** @var $block \Magento\Catalog\Block\Product\View */
+$om = \Magento\Framework\App\ObjectManager::getInstance();  
+$resolver = $om->get('Magento\Framework\Locale\Resolver');
+$langCode = $resolver->getLocale();
+$pos = strpos($langCode, "es");
+$cuenta = "";
+
+ if( $pos !== false ){ 
+  $cuenta = 'Mi cuenta';    
+  $ingresar = 'Ingresar';
+  $favoritos = 'Favoritos';
+  $envio = 'Estado de envío';
+  $cerrar = 'Cerrar sesión';
+ }else{ 
+  $cuenta = 'My account';  
+  $ingresar = 'Login';   
+  $favoritos = 'Wish list';
+  $envio = 'Order status';
+  $cerrar = 'Logout';
+}  
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $objectManager->get('Magento\Customer\Model\Session');
+?> 
+<nav id="menuMobileCoope" class="slideInLeft animated">
+    <h3><?= $cuenta ?><div id="salirMenuMobile"><i class="fas fa-times-circle"></i></div></h3>
+    <ul>
+    <?php 
+            if($customerSession->isLoggedIn() == false) { ?>
+            <li class="authorization-link"> <a href="<?= $block->getUrl('') ?>customer/account/login"><?= $ingresar ?></a></li>        
+        <?php
+            } ?>
+        <li> <a href="<?= $block->getUrl('') ?>wishlist"><?= $favoritos ?></a></li>
+        <li> <a href="<?= $block->getUrl('') ?>estado-de-envio"><?= $envio ?></a></li>        
+        <?php 
+            if($customerSession->isLoggedIn() == true) { ?>
+        <li> <a href="<?= $block->getUrl('') ?>customer/account/logout"><?= $cerrar ?></a></li>
+        <?php
+            }
+        ?>
+    </ul>
+</nav>
+<?php $storeName = $block->getThemeName() ? $block->getThemeName() : $block->getLogoAlt();?>
+<span data-action="toggle-nav" class="action nav-toggle"><span><?= /* @escapeNotVerified */ __('Toggle Nav') ?></span></span>
+<?php if ($block->isHomePage()):?>
+    <strong class="logo">
+<?php else: ?>
+    <a class="logo coopelesca-logo" href="<?= $block->getUrl('') ?>" title="<?= /* @escapeNotVerified */ $storeName ?>">
+<?php endif ?>
+        <img src="<?= /* @escapeNotVerified */ $block->getLogoSrc() ?>"
+             alt="<?= /* @escapeNotVerified */ $block->getLogoAlt() ?>"
+             <?= $block->getLogoWidth() ? 'width="' . $block->getLogoWidth() . '"' : '' ?>
+             <?= $block->getLogoHeight() ? 'height="' . $block->getLogoHeight() . '"' : '' ?>
+        />
+<?php if ($block->isHomePage()):?>
+    </strong>
+<?php else:?>
+    </a>
+<?php endif?>

@@ -1,0 +1,67 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+<?php
+/**
+ * Template for displaying new products widget
+ *
+ * @var $block \Magento\Catalog\Block\Product\Widget\NewWidget
+ */
+if ($exist = ($block->getProductCollection() && $block->getProductCollection()->getSize())) {
+    $type = 'widget-new-grid';
+
+    $mode = 'grid';
+
+    $image = 'new_products_content_widget_grid';
+    $title = __('New Products');
+    $items = $block->getProductCollection()->getItems();
+
+    $showWishlist = true;
+    $showCompare = true;
+    $showCart = true;
+    $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::DEFAULT_VIEW;
+    $description = false;
+    $om = \Magento\Framework\App\ObjectManager::getInstance();  
+    $resolver = $om->get('Magento\Framework\Locale\Resolver');
+    $langCode = $resolver->getLocale();
+    $pos = strpos($langCode, "es");
+}
+?>
+
+<?php if ($exist): ?>
+    <div class="block widget block-new-products <?= /* @escapeNotVerified */ $mode ?>">
+        <div class="block-title">
+            <strong role="heading" aria-level="2"><?= /* @escapeNotVerified */ $title ?></strong>
+        </div>
+         <div class="row">
+            <div id="newProducts" class="owl-carousel <?= $type ?>">                                    
+                    <?php foreach ($items as $_item): ?>                       
+                        <div class="product-item-info">
+                            <a href="<?= $block->escapeUrl($block->getProductUrl($_item)) ?>" class="product-item-photo">
+                                <?= $block->getImage($_item, $image)->toHtml() ?>
+                            </a>
+                            <div class="product-item-details products-front-list">
+                                <strong class="product-item-name">
+                                    <a title="<?= $block->escapeHtml($_item->getName()) ?>"
+                                       href="<?= $block->escapeUrl($block->getProductUrl($_item)) ?>"
+                                       class="product-item-link">
+                                        <?= $block->escapeHtml($_item->getName()) ?>
+                                    </a>
+                                </strong>
+                                
+                                <p class="descripcionProducto"><?= $_item->getShortDescription() ?> </p>
+                                <p class="skuProducto"><strong><?= ((!($pos === false))) ? "C&oacute;digo" : "Sku" ?> :</strong>&nbsp;<?= $_item->getSku() ?> </p>
+                                <p class="precioProducto"><?= $block->getProductPriceHtml($_item, $type) ?> </p>
+                            </div>
+                        </div>
+                    <?php endforeach ?>
+        </div>
+    </div>
+<?php endif;?>
+</div>

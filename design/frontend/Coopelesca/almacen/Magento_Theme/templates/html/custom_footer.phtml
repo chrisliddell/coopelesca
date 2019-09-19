@@ -1,0 +1,72 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+$om = \Magento\Framework\App\ObjectManager::getInstance();	
+$resolver = $om->get('Magento\Framework\Locale\Resolver');
+$langCode = $resolver->getLocale();
+$pos = strpos($langCode, "es");
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $objectManager->create('\Magento\Customer\Model\Session');
+?>
+<div class="footer-container">
+    <div class="footer">
+        <?= $block->getChildHtml() ?>
+		<?= (!($pos === false)) ? $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('footer-es')->toHtml() : $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('footer-en')->toHtml()  ?>
+    </div>
+    <div class="row">
+		<div id="ventana-bienvenido" title="<?= (!($pos === false)) ? "Bienvenido" : "Welcome" ?>">
+			<form class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<input type="hidden" value="2" name="accion"/>	
+						<h3><?= (!($pos === false)) ? "Bienvenido" : "Welcome" ?></h3>
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">	
+							<label for="opciones-almacen"><?= (!($pos === false)) ? "Seleccione su almac&eacute;n m&aacute;s cercano" : "Choose your nearest store" ?> </label>
+		                	<select id="opciones-almacen" name="opciones-almacen"></select>
+		                	<label for="recordar-almacen"><?= (!($pos === false)) ? "Recordar este almac&eacute;n" : "Remember the store" ?></label>
+		                	<input type="checkbox" id="recordar-almacen" name="recordar-almacen" class="pull-left" value="" />
+		                </div>	
+		                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">	
+							<label for="opciones-idioma"><?= (!($pos === false)) ? "Seleccione un idioma" : "Choose your language" ?></label>
+		                	<select id="opciones-idioma" name="opciones-idioma"></select>
+		                	<label for="recordar-idioma"><?= (!($pos === false)) ? "Recordar este idioma" : "Remember the language" ?></label>
+		                	<input type="checkbox" id="recordar-idioma" name="recordar-idioma" class="pull-left" value="" />
+		                </div>
+
+		                <div id="botonIngresoPreferencia" class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Ingresar</span></button></div></div>
+	        </form>
+	        <div id="mensaje-bienvenido" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center"></div>	
+		</div>
+	</div>
+</div>
+<?php  if( $customerSession->isLoggedIn() ){ 
+
+	if($pos !== false){
+	?>
+	<script type="text/javascript">
+		require(['jquery'],function($){
+		    $(document).ready(function() {
+		       $("ul.header.links").append('<li id="mi-cuenta" class="mi-cuenta"><a href="<?= $this->getUrl().'/customer/account/index/' ?>">Mi cuenta</a></li>');
+		    });
+		});
+	</script>
+<?php }else{ ?>
+	<script type="text/javascript">
+		require(['jquery'],function($){
+		    $(document).ready(function() {
+		       $("ul.header.links").append('<li id="mi-cuenta" class="mi-cuenta"><a href="<?= $this->getUrl().'/customer/account/index/' ?>">My account</a></li>');
+		    });
+		});
+	</script>
+<?php } ?>	
+<?php  }else{ ?>
+	<script type="text/javascript">
+		require(['jquery'],function($){
+		    $(document).ready(function() {
+		       $("#mi-cuenta").remove();
+		    });
+		});
+	</script>
+<?php } ?>

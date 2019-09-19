@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Checkout\Block\Onepage">
+        <arguments>
+            <argument name="layoutProcessors" xsi:type="array">
+                <item name="imagineer_address_layoutprocessor" xsi:type="object">Imagineer\Address\Block\Checkout\LayoutProcessor</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Customer\Block\Address\Edit">
+        <plugin disabled="false" name="Imagineer\Address\Customer\AddressEditPlugin" sortOrder="9" type="Imagineer\Address\Plugin\Customer\AddressEditPlugin" />					
+    </type>
+    <type name="Magento\Quote\Model\BillingAddressManagement">
+        <plugin disabled="false" name="Imagineer_Address_Plugin_Magento_Quote_Model_BillingAddressManagement" sortOrder="10" type="Imagineer\Address\Plugin\Magento\Quote\Model\BillingAddressManagement"/>
+    </type>
+    <type name="Magento\Quote\Model\ShippingAddressManagement">
+        <plugin disabled="false" name="Imagineer_Address_Plugin_Magento_Quote_Model_ShippingAddressManagement" sortOrder="11" type="Imagineer\Address\Plugin\Magento\Quote\Model\ShippingAddressManagement"/>
+    </type>
+    <type name="Magento\Checkout\Model\PaymentInformationManagement">
+        <plugin disabled="false" name="Imagineer_Address_Plugin_Magento_Checkout_Model_PaymentInformationManagement" sortOrder="12" type="Imagineer\Address\Plugin\Magento\Checkout\Model\PaymentInformationManagement"/>
+    </type>
+</config>

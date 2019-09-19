@@ -1,0 +1,43 @@
+{
+	"name" : "Imagineer/AddressSetup",
+	"license" : "proprietary",
+	"authors" : [{
+			"name" : "Jose Luis Moya Sobrado",
+			"email" : "jose@smartnow.tech",
+			"role" : "R&D Director",
+			"homepage" : "https://www.linkedin.com/in/jose-luis-moya-sobrado-37250b26/"
+		}, {
+			"name" : "Junior Juarez",
+			"email" : "jjuarez@smartnow.tech",
+			"role" : "Software Engineer"
+		}
+	],
+	"minimum-stability" : "stable",
+	"require" : {
+		"php" : "~5.5.0|~5.6.0|~7.0.13|~7.1.0",
+		"imagineer/address" : "*"
+	},
+	"autoload" : {
+		"files" : [
+			"registration.php"
+		],
+		"psr-4" : {
+			"Imagineer\\AddressSetup\\" : ""
+		}
+	},
+	"type" : "magento2-module",
+	"support" : {
+		"email" : "support@smartnow.tech"
+	},
+	"keywords" : [
+		"magento2",
+		"imagineer",
+		"address",
+		"setup"
+	],
+	"repositories" : [{
+			"type" : "vcs",
+			"url" : "svn://smartnow.technology/Magento/module-addresssetup"
+		}
+	]
+}

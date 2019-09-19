@@ -1,0 +1,92 @@
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<div class="payment-method" data-bind="css: {'_active': (getCode() == isChecked())}">
+    <div class="payment-method-title field choice">
+        <input type="radio"
+               name="payment[method]"
+               class="radio"
+               data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"/>
+        <label class="label" data-bind="attr: {'for': getCode()}">
+            <span data-bind="text: getTitle()"></span>
+        </label>
+    </div>
+
+    <div class="payment-method-content">
+        <!-- ko foreach: getRegion('messages') -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!--/ko-->
+        <div class="payment-method-billing-address">
+            <!-- ko foreach: $parent.getRegion(getBillingAddressFormName()) -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
+        <br>
+
+<!--             <span class="price" data-bind="text: getValue()"></span> -->
+        <h1>Paygate</h1>
+        <FORM method='post' action='https://evertecepstest.net/PayGate/Colector' >
+			<INPUT type='hidden' name='x_login' value='API_LOGIN_IDV' /> 
+<!-- 			Es el login que generamos nosotros -->
+			<INPUT type='hidden' name='x_amount' value='3000.21' />
+			<INPUT type='hidden' name='x_type' value='AUTH_CAPTURE' /> 
+<!-- 			fijo -->
+			<INPUT type='hidden' name='x_invoice_num' value='20110620150213' /> 
+<!-- 			el cliente -->
+			<INPUT type='hidden' name='x_fp_sequence' value='992015' /> 
+<!-- 			el cliente -->
+			<INPUT type='hidden' name='x_fp_timestamp' value='1308603733' />
+<!-- 			 el cliente -->
+			<INPUT type='hidden' name='x_fp_hash' value='fingerprint' /> 
+<!-- 			se genera por cada tx, es MD5 -->
+			<INPUT type='hidden' name='x_currency_code' value='188' />
+<!-- 			 depende de la moneda. -->
+			<INPUT type='hidden' name='x_test_request' value='false' />
+			<INPUT type='hidden' name='x_show_form' value='PAYMENT_FORM' /> 
+<!-- 			fijo -->
+			<input type='submit' value='Compra' /> 
+<!-- 			depende de tipo de tx. Puede ser cualquier cosa. -->
+		</FORM>
+		        
+        
+        
+        <br>
+        <br>
+        <div class="field required">
+            <label data-bind="attr: {for: getCode() + '_transaction_result'}" class="label">
+                <span><!-- ko i18n: 'Transaction Result'--><!-- /ko --></span>
+            </label>
+
+
+
+
+<!--             <div class="control"> -->
+<!--                 <select name="payment[transaction_result]" -->
+<!--                         class="select" -->
+<!--                         data-bind=" -->
+<!--                                   options: getTransactionResults(), -->
+<!--                                   optionsValue: 'value', -->
+<!--                                   optionsText: 'transaction_result', -->
+<!--                                   optionsCaption: $t('Transaction Result'), -->
+<!--                                   value: transactionResult"> -->
+<!--                 </select> -->
+<!--             </div> -->
+        </div>
+
+        <div class="actions-toolbar">
+            <div class="primary">
+                <button class="action primary checkout"
+                        type="submit"
+                        data-bind="
+                        click: placeOrder,
+                        attr: {title: $t('Place Order')}
+                        ">
+                    <span data-bind="i18n: 'Place Order'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

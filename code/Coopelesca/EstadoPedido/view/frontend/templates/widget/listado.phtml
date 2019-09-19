@@ -1,0 +1,14 @@
+<div class="widget block block-static-block">
+<?php if($block->getData('widgettitle')): ?>
+	<div class="block-title"><strong><?= $block->getData('widgettitle') ?></strong></div>
+<?php endif; ?>
+	<div class="row">
+        <div id="codigoEstadoPedido"></div>
+        <div id="timelinePedido">
+            <section class="cd-timeline js-cd-timeline">
+                <div id="timeline" class="cd-timeline__container"></div>
+            </section>
+        </div>
+    </div>
+</div>
+<script src="<?= $block->getViewFileUrl('Coopelesca_EstadoPedido::js/estado-pedido.js'); ?>" ></script>

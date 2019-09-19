@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+
+        <move element="page.main.title" destination="product.info.main" before="product.info.price"/>
+        <move element="product.info.stock.sku" destination="product.info.price" after="product.price.final"/>
+        <move element="product.info.review" destination="product.info.main" after="product.info.price"/>
+
+        <referenceBlock name="product.info.overview" remove="true"/>
+        <move element="product.info.main" destination="main" before="product.info.media"/>
+    	<move element="product.info.main" destination="content" before="product.info.details"/>
+        
+    	<referenceContainer name="main"></referenceContainer>
+    	<referenceContainer name="product.info.media" htmlClass="col-lg-4 col-sm-4 col-md-4 imagen-producto"></referenceContainer>
+        <referenceContainer name="product.info.main" htmlClass="product-info-main col-lg-4 col-sm-6 col-md-6 detalle-producto"></referenceContainer>
+    	<referenceContainer name="product.info.details" htmlClass="col-lg-8"></referenceContainer>  
+        <referenceContainer name="sidebar.additional">
+           <block class="Magento\Cms\Block\Block" name="banner">
+               <arguments>
+                    <argument name="block_id" xsi:type="string">banner</argument>
+               </arguments>
+           </block>
+        </referenceContainer>   
+        <move element="catalog.product.related" destination="product.info.additional" />
+        <referenceBlock name="product.price.final" remove="true"/>
+    </body>
+</page>

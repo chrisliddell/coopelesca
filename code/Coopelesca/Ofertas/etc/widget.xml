@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:ofertas:Magento_Widget:etc/widget.xsd">
+	<widget class="Coopelesca\Ofertas\Block\Widget\Listado" id="coopelesca_ofertas_listado">
+		<label>Ofertas</label>
+		<description>Listado de los productos en Oferta</description>
+		<parameters>
+			<parameter name="widgettitle" sort_order="10" visible="true" xsi:type="text">
+				<label>Título</label>
+			</parameter>
+		</parameters>
+	</widget>
+</widgets>
+

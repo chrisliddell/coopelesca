@@ -1,0 +1,51 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/**
+ * @var \Magento\Theme\Block\Html\Header $block
+ */
+$welcomeMessage = $block->getWelcome();
+$om = \Magento\Framework\App\ObjectManager::getInstance();  
+$resolver = $om->get('Magento\Framework\Locale\Resolver');
+$langCode = $resolver->getLocale();
+$pos = strpos($langCode, "es");
+?>
+<noscript><?= ( $pos !== false ) ? "Es necesario activar JavaScript para navegar en este sitio" : "Your browser does not support JavaScript!" ?></noscript> 
+<?php switch ($block->getShowPart()):
+    // Se le puso un * para que nunca entre a este caso, y no muestre el mensaje de bienvenida
+    case 'welcome*': ?>
+        <li class="greet welcome" data-bind="scope: 'customer'">
+            <!-- ko if: customer().fullname  -->
+            <span data-bind="text: new String('<?= $block->escapeHtml(__('Welcome, %1!', '%1')) ?>').replace('%1', customer().fullname)">
+            </span>
+            <!-- /ko -->
+            <!-- ko ifnot: customer().fullname  -->
+            <span data-bind='html:"<?= $block->escapeHtml($welcomeMessage) ?>"'></span>
+            <?= $block->getBlockHtml('header.additional') ?>
+            <!-- /ko -->
+        </li>
+        <script type="text/x-magento-init">
+        {
+            "*": {
+                "Magento_Ui/js/core/app": {
+                    "components": {
+                        "customer": {
+                            "component": "Magento_Customer/js/view/customer"
+                        }
+                    }
+                }
+            }
+        }
+        </script>
+    <?php break; ?>
+
+    <?php case 'other': ?>
+        <?= $block->getChildHtml() ?>
+    <?php break; ?>
+
+<?php endswitch; ?>

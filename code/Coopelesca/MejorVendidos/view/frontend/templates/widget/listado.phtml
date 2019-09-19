@@ -1,0 +1,85 @@
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$productCollection = $objectManager->create('Magento\Reports\Model\ResourceModel\Report\Collection\Factory'); 
+$collection = $productCollection->create('Magento\Sales\Model\ResourceModel\Report\Bestsellers\Collection'); 
+
+$collection->setPeriod('month');
+//$collection->setPeriod('year');
+//$collection->setPeriod('day');
+
+foreach ($collection as $item) {
+    print_r($item->getData());
+} ?>
+<div class="widget block block-static-block">
+<?php if($block->getData('widgettitle')): ?>
+	<div class="block-title"><strong><?= $block->getData('widgettitle') ?></strong></div>
+<?php endif; ?>
+	<div class="row">
+		<div class="owl-carousel">
+  			<div class="espacio">
+				<img src="<?= $block->getViewFileUrl("Coopelesca_MejorVendidos::images/celular.png"); ?>" />
+				<ul class="detalle-producto">
+					<li><strong>Sartén Eléctrico Oster</strong></li>
+					<li>Oster / CKSTSKSH12</li>
+					<li>Código: 1005</li>
+					<li style="color: #f47920;font-weight: 800;">₡20,200 </li>
+				</ul>
+			</div>
+  			<div class="espacio">
+				<img src="<?= $block->getViewFileUrl("Coopelesca_MejorVendidos::images/laptop.png"); ?>" />
+                                <ul class="detalle-producto">
+                                	<li><strong>Sartén Eléctrico Oster</strong></li>
+                                        <li>Oster / CKSTSKSH12</li>
+                                        <li>Código: 1005</li>
+                                        <li style="color: #f47920;font-weight: 800;">₡20,200 </li>
+				                </ul>
+			</div>
+  			<div class="espacio">
+				<img src="<?= $block->getViewFileUrl("Coopelesca_MejorVendidos::images/refrigeradora.png"); ?>" />
+                                <ul class="detalle-producto">
+                        		<li><strong>Sartén Eléctrico Oster</strong></li>
+                                        <li>Oster / CKSTSKSH12</li>
+                                        <li>Código: 1005</li>
+                                        <li style="color: #f47920;font-weight: 800;">₡20,200 </li>
+			        </ul>
+			</div>
+  			<div class="espacio">
+				<img src="<?= $block->getViewFileUrl("Coopelesca_MejorVendidos::images/microondas.png"); ?>" />
+                                <ul class="detalle-producto">
+                                	<li><strong>Sartén Eléctrico Oster</strong></li>
+                                        <li>Oster / CKSTSKSH12</li>
+                                        <li>Código: 1005</li>
+                                        <li style="color: #f47920;font-weight: 800;">₡20,200 </li>
+				</ul>
+			</div>
+  			<div class="espacio">
+				<img src="<?= $block->getViewFileUrl("Coopelesca_MejorVendidos::images/juego-sala.png"); ?>" />
+                                <ul class="detalle-producto">
+                                	<li><strong>Sartén Eléctrico Oster</strong></li>
+                                        <li>Oster / CKSTSKSH12</li>
+                                        <li>Código: 1005</li>
+                                        <li style="color: #f47920;font-weight: 800;">₡20,200 </li>
+				</ul>
+			</div>
+  			<div class="espacio">
+				<img src="<?= $block->getViewFileUrl("Coopelesca_MejorVendidos::images/refrigeradora.png"); ?>" />
+                                <ul class="detalle-producto">
+                                	<li><strong>Sartén Eléctrico Oster</strong></li>
+                                        <li>Oster / CKSTSKSH12</li>
+                                        <li>Código: 1005</li>
+                                        <li style="color: #f47920;font-weight: 800;">₡20,200 </li>
+				</ul>
+			</div>
+  			<div class="espacio">
+				<img src="<?= $block->getViewFileUrl("Coopelesca_MejorVendidos::images/laptop.png"); ?>" />
+                                <ul class="detalle-producto">
+                                	<li><strong>Sartén Eléctrico Oster</strong></li>
+                                        <li>Oster / CKSTSKSH12</li>
+                                        <li>Código: 1005</li>
+                                        <li style="color: #f47920;font-weight: 800;">₡20,200 </li>
+				</ul>
+			</div>	
+		</div>
+	</div>	
+</div>
+<script src="<?= $block->getViewFileUrl('Coopelesca_MejorVendidos::js/acciones-mejor-vendidos.js'); ?>" ></script>

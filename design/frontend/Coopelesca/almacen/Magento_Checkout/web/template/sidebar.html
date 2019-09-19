@@ -1,0 +1,43 @@
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<div id="estimacion">
+	<div class="opc-wrapper">
+	    <div id="separaAccionesCarrito">
+	    <ul id="accionesCustomCarrito">
+			<li class="vaciaCarrito"  data-bind="text: getVaciarCarrito(), click: vaciaCarrito"></li>
+			<li class="editarCarrito" data-bind="text: getEditarCarrito(), click: editarCarrito"></li>
+	        <li class="seguirComprando" data-bind="text: getSeguirComprando(), click: sigueComprando"></li>
+	    </ul>
+	</div>
+	<div class="opc-estimated-wrapper" data-bind="blockLoader: isLoading">
+	    <div class="estimated-block">
+	        <form>
+	            <input type="hidden" data-bind="value: getValue()" name="rawTotal" id="rawTotal" />
+			</form>
+			<p id='lblSubtotal'></p>
+			<p id='lblDescuento'></p>
+	        <p id='lblSubtotalDescuento'></p>	        
+	    </div>
+	    <div class="minicart-wrapper" >
+	        <button type="button" class="action showcart" data-bind="click: showSidebar" data-toggle="opc-summary">
+	            <span class="counter qty">
+	                <span class="counter-number" data-bind="text: getQuantity()"></span>
+	            </span>
+	        </button>
+	    </div>
+	</div>
+</div>
+<div id="opc-sidebar" data-bind="afterRender:onRenderComplete">
+    <!-- ko foreach: getRegion('summary') -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+    <!--/ko-->
+    <div class="opc-block-shipping-information">
+        <!-- ko foreach: getRegion('shipping-information') -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!--/ko-->
+    </div>
+</div>

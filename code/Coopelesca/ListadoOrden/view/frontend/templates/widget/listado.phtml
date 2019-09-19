@@ -1,0 +1,40 @@
+<?php
+$_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$orderId = $this->getRequest()->getParam('orden');
+
+if(isset($orderId)){
+
+    $order = $_objectManager->create('Magento\Sales\Model\Order')->loadByIncrementId($orderId);
+    $orderItems = $order->getAllItems();
+
+
+    $resolver = $_objectManager->get('Magento\Framework\Locale\Resolver');
+    $langCode = $resolver->getLocale();
+    $pos = strpos($langCode, "es");
+
+    ?>
+    <ul id="detalleCarritoCalculadora" class="list-group row">
+        <li class="list-group-item col-lg-2 encabezado hideSm"><?= ( $pos !== false ) ? "Producto" : "Product" ?></li>
+        <li class="list-group-item col-lg-2 encabezado hideSm"><?= ( $pos !== false ) ? "Descripción" : "Description" ?></li>
+        <li class="list-group-item col-lg-2 encabezado hideSm"><?= ( $pos !== false ) ? "Precio" : "Price" ?></li>
+        <li class="list-group-item col-lg-2 encabezado hideSm"><?= ( $pos !== false ) ? "Cantidad" : "Quantity" ?></li>
+        <li class="list-group-item col-lg-2 encabezado hideSm"><?= ( $pos !== false ) ? "Subtotal" : "Subtotal" ?></li>
+    <?php
+ 
+    foreach($orderItems as $item) {     
+        $_product = $_objectManager->get(\Magento\Catalog\Model\Product::class)->load($item->getData("product_id"));
+
+        $store  = $_objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore();
+        $imageUrl   = $store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $_product->getImage();
+        $mediaUrl   = $store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
+
+        echo '<li class="list-group-item mt-5 col-lg-2 col-md-12 col-sm-12 col-xs-12"><p class="hideLg"><strong>'.(( $pos !== false ) ? "Producto" : "Product").'</strong></p><img class="img-fluid" height="128" width="128" src="'.$imageUrl.'" /></li>';
+        echo '<li class="list-group-item col-lg-2 col-md-12 col-sm-12 col-xs-12"><p class="hideLg"><strong>'.(( $pos !== false ) ? "Descripción" : "Description").'</strong></p>'.strip_tags(substr($_product->getName(),0,100)).'</li>';    
+        echo '<li class="list-group-item col-lg-2 col-md-3 col-sm-3 col-xs-3"><p class="hideLg"><strong>'.(( $pos !== false ) ? "Precio" : "Price").'</strong></p><strong>₡'.number_format($item->getPrice(), 2, '.', ',').'</strong></li>';
+        echo '<li class="list-group-item col-lg-2 col-md-3 col-sm-3 col-xs-3"><p class="hideLg"><strong>'.(( $pos !== false ) ? "Cantidad" : "Quantity").'</strong></p>'.((int)$item->getData("qty_ordered")).'</li>';
+        echo '<li class="list-group-item col-lg-2 col-md-3 col-sm-3 col-xs-3"><p class="hideLg"><strong>'.(( $pos !== false ) ? "Subtotal" : "Subtotal").'</strong></p><strong>₡'.number_format(($item->getData("qty_ordered")*($item->getPrice())), 2, '.', ',').'</strong></li>';          
+    }
+
+}
+?>
+</ul>

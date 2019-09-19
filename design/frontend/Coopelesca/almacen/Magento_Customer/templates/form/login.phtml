@@ -1,0 +1,18 @@
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $objectManager->create('\Magento\Customer\Model\Session');
+
+if(! $customerSession->isLoggedIn() ){ ?>
+<script type="text/javascript">
+		require(['jquery','jquery/ui'],function($){
+		    $(document).ready(function() {
+		       $( "#ventana-inicio" ).dialog({
+					modal: true,
+					draggable: false,
+					closeOnEscape: false,
+					dialogClass: 'inicio'             
+				});
+		    });
+		});
+	</script>
+<?php } ?>

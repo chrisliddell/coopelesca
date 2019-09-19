@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:listadoorden:Magento_Widget:etc/widget.xsd">
+    <widget class="Coopelesca\ListadoOrden\Block\Widget\ListadoOrden" id="coopelesca_listadoorden_listado">
+        <label>Listado de una orden</label>
+        <description>Muestra un listado de una orden especiífica.</description>
+    </widget>
+</widgets>

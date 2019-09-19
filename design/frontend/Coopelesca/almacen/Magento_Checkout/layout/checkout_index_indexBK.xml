@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+<head>
+	<script src="Imagineer_Address::js/filter-checkout/filter.js" />
+</head>
+<body>
+    <move element="logo" destination="header.panel"/>
+    <referenceContainer name="header.panel" remove="false" />
+    <referenceBlock name="header.links" remove="true" />
+    <referenceBlock name="top.search" remove="false" />
+    <referenceBlock name="catalog.topnav" remove="true"/>
+    <referenceBlock name="navigation.sections" remove="true"/>
+    <referenceContainer name="footer-container"  remove="false"/>
+    <referenceBlock name="top.links" remove="true" />
+    <referenceBlock name="minicart" remove="true" />    
+    <referenceBlock name="authentication" remove="true" />  
+      
+    <referenceBlock name="checkout.root">
+            <arguments>
+                <argument name="jsLayout" xsi:type="array">
+                    <item name="components" xsi:type="array">
+                        <item name="checkout" xsi:type="array">
+                            <item name="children" xsi:type="array">
+                                <item name="steps" xsi:type="array">
+                                    <item name="children" xsi:type="array">
+                                        <item name="shipping-step" xsi:type="array">
+                                            <item name="children" xsi:type="array">
+                                                <item name="shippingAddress" xsi:type="array">
+                                                    <item name="children" xsi:type="array">
+                                                        <item name="shipping-address-fieldset" xsi:type="array">
+                                                            <item name="children" xsi:type="array">
+                                                                <item name="country_id" xsi:type="array">
+                                                                  <item name="sortOrder" xsi:type="string">1001</item>
+                                                                </item> 
+                                                                <item name="city" xsi:type="array">
+                                                                  <item name="sortOrder" xsi:type="string">1002</item>
+                                                                </item> 
+                                                                <item name="region" xsi:type="array">
+                                                                  <item name="sortOrder" xsi:type="string">1003</item>
+                                                                </item>
+                                                            </item>
+                                                        </item>
+                                                    </item>
+                                                </item>
+                                            </item>
+                                        </item>
+                                    </item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </argument>
+            </arguments>
+        </referenceBlock>
+    <referenceBlock name="checkout.root">
+            <arguments>
+                <argument name="jsLayout" xsi:type="array">
+                    <item name="components" xsi:type="array">
+                        <item name="checkout" xsi:type="array">
+                            <item name="children" xsi:type="array">
+                                <item name="authentication" xsi:type="array">
+                                    <item name="config" xsi:type="array">
+                                        <item name="componentDisabled" xsi:type="boolean">true</item>
+                                    </item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </argument>
+            </arguments>
+        </referenceBlock>
+    
+    <referenceBlock name="checkout.root">
+        <arguments>
+            <argument name="jsLayout" xsi:type="array">
+                <item name="components" xsi:type="array">
+                    <item name="checkout" xsi:type="array">
+                        <item name="children" xsi:type="array">
+                            <item name="steps" xsi:type="array">
+                                <item name="children" xsi:type="array">
+                                    <item name="billing-step" xsi:type="array">
+                                        <item name="children" xsi:type="array">
+                                            <item name="payment" xsi:type="array">
+                                                <item name="children" xsi:type="array">
+                                                    <item name="afterMethods" xsi:type="array">
+                                                        <item name="children" xsi:type="array">        
+                                                            <item name="giftCardAccount" xsi:type="array">
+                                                                <item name="config" xsi:type="array">
+                                                                    <item name="componentDisabled" xsi:type="boolean">true</item>
+                                                                </item>
+                                                            </item>
+                                                        </item>
+                                                    </item>
+                                                </item>
+                                            </item>
+                                        </item>
+                                    </item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </item>
+            </argument>
+        </arguments>
+    </referenceBlock>    
+</body>
+</page>

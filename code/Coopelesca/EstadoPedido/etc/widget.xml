@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:estadopedido:Magento_Widget:etc/widget.xsd">
+    <widget class="Coopelesca\EstadoPedido\Block\Widget\EstadoPedido" id="coopelesca_estadopedido_estado">
+        <label>Estado del pedido</label>
+        <description>Muestra un timeline y estado del pedido</description>
+    </widget>
+</widgets>

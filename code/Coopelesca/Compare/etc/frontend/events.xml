@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+	
+	<event name="controller_action_predispatch_catalog_product_compare_add">
+		<observer name="agregaproducto" instance="Coopelesca\Compare\Observer\agregaProducto" />
+	</event>
+	<event name="controller_action_postdispatch_catalog_product_compare_add">
+		<observer name="agregaproductocomp" instance="Coopelesca\Compare\Observer\agregaProductoComp" />
+	</event>
+	<event name="controller_action_postdispatch_checkout_cart_add">
+		<observer name="agregaproductocart" instance="Coopelesca\Compare\Observer\agregaProductoCart" />
+	</event>
+    <event name="checkout_cart_update_items_before">
+        <observer name="actualizaCart" instance="Coopelesca\Compare\Observer\actualizaCart" />
+    </event>
+	<event name="controller_action_predispatch_checkout_cart_index">
+        <observer name="actualizaCartEdit" instance="Coopelesca\Compare\Observer\actualizaCartEdit" />
+    </event>
+	
+</config>

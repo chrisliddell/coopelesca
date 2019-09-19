@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Payment Method Facade configuration -->
+    <virtualType name="PaygateGatewayFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">\Imagineer\Paygate\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Imagineer\Paygate\Block\Info</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PaygateGatewayValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">PaygateGatewayCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Configuration reader -->
+    <virtualType name="PaygateGatewayConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">\Imagineer\Paygate\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Logger, initialized with PaygateGatewayConfig -->
+    <virtualType name="PaygateGatewayLogger" type="Magento\Payment\Model\Method\Logger">
+        <arguments>
+            <argument name="config" xsi:type="object">PaygateGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Imagineer\Paygate\Gateway\Http\Client\ClientMock">
+        <arguments>
+            <argument name="logger" xsi:type="object">PaygateGatewayLogger</argument>
+        </arguments>
+    </type>
+
+    <!-- Commands infrastructure -->
+    <virtualType name="PaygateGatewayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="authorize" xsi:type="string">PaygateGatewayAuthorizeCommand</item>
+                <item name="capture" xsi:type="string">PaygateGatewayCaptureCommand</item>
+                <item name="void" xsi:type="string">PaygateGatewayVoidCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorize command -->
+    <virtualType name="PaygateGatewayAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PaygateGatewayAuthorizationRequest</argument>
+            <argument name="handler" xsi:type="object">PaygateGatewayResponseHandlerComposite</argument>
+            <argument name="transferFactory" xsi:type="object">Imagineer\Paygate\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Imagineer\Paygate\Gateway\Http\Client\ClientMock</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorization Request -->
+    <virtualType name="PaygateGatewayAuthorizationRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="transaction" xsi:type="string">Imagineer\Paygate\Gateway\Request\AuthorizationRequest</item>
+                <item name="mockData" xsi:type="string">Imagineer\Paygate\Gateway\Request\MockDataRequest</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Imagineer\Paygate\Gateway\Request\AuthorizationRequest">
+        <arguments>
+            <argument name="config" xsi:type="object">PaygateGatewayConfig</argument>
+        </arguments>
+    </type>
+
+    <!-- Capture command -->
+    <virtualType name="PaygateGatewayCaptureCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">Imagineer\Paygate\Gateway\Request\CaptureRequest</argument>
+            <argument name="handler" xsi:type="object">Imagineer\Paygate\Gateway\Response\TxnIdHandler</argument>
+            <argument name="transferFactory" xsi:type="object">Imagineer\Paygate\Gateway\Http\TransferFactory</argument>
+            <argument name="validator" xsi:type="object">Imagineer\Paygate\Gateway\Validator\ResponseCodeValidator</argument>
+            <argument name="client" xsi:type="object">Imagineer\Paygate\Gateway\Http\Client\ClientMock</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Capture Request -->
+    <type name="Imagineer\Paygate\Gateway\Request\CaptureRequest">
+        <arguments>
+            <argument name="config" xsi:type="object">PaygateGatewayConfig</argument>
+        </arguments>
+    </type>
+
+    <!-- Void command -->
+    <virtualType name="PaygateGatewayVoidCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">Imagineer\Paygate\Gateway\Request\VoidRequest</argument>
+            <argument name="handler" xsi:type="object">Imagineer\Paygate\Gateway\Response\TxnIdHandler</argument>
+            <argument name="transferFactory" xsi:type="object">Imagineer\Paygate\Gateway\Http\TransferFactory</argument>
+            <argument name="validator" xsi:type="object">Imagineer\Paygate\Gateway\Validator\ResponseCodeValidator</argument>
+            <argument name="client" xsi:type="object">Imagineer\Paygate\Gateway\Http\Client\ClientMock</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Void Request -->
+    <type name="Imagineer\Paygate\Gateway\Request\VoidRequest">
+        <arguments>
+            <argument name="config" xsi:type="object">PaygateGatewayConfig</argument>
+        </arguments>
+    </type>
+
+    <!-- Response handlers -->
+    <virtualType name="PaygateGatewayResponseHandlerComposite" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="txnid" xsi:type="string">Imagineer\Paygate\Gateway\Response\TxnIdHandler</item>
+                <item name="fraud" xsi:type="string">Imagineer\Paygate\Gateway\Response\FraudHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Value handlers infrastructure -->
+    <virtualType name="PaygateGatewayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PaygateGatewayConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PaygateGatewayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PaygateGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Imagineer\Paygate\Block\Info">
+        <arguments>
+            <argument name="config" xsi:type="object">PaygateGatewayConfig</argument>
+        </arguments>
+    </type>
+
+</config>

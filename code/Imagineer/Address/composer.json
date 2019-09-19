@@ -1,0 +1,41 @@
+{
+	"name" : "Imagineer/Address",
+	"description" : "Address customization module extension",
+	"keywords" : [
+		"magento2",
+		"imagineer",
+		"address"
+	],
+	"type" : "magento2-module",
+	"license" : "proprietary",
+	"require" : {
+		"php" : "~5.5.0|~5.6.0|~7.0.13|~7.1.0"
+	},
+	"autoload" : {
+		"files" : [
+			"registration.php"
+		],
+		"psr-4" : {
+			"Imagineer\\Address\\" : ""
+		}
+	},
+	"authors" : [{
+			"name" : "Jose Luis Moya Sobrado",
+			"email" : "jose@smartnow.tech",
+			"role" : "R&D Director",
+			"homepage" : "https://www.linkedin.com/in/jose-luis-moya-sobrado-37250b26/"
+		}, {
+			"name" : "Junior Juarez",
+			"email" : "jjuarez@smartnow.tech",
+			"role" : "Software Engineer"
+		}
+	],
+	"support" : {
+		"email" : "support@smartnow.tech"
+	},
+	"repositories" : [{
+			"type" : "vcs",
+			"url" : "svn://smartnow.technology/Magento/module-address"
+		}
+	]
+}

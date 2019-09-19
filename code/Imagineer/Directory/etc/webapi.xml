@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/county/code/:code" method="GET">
+        <service class="Imagineer\Directory\Api\CountyInformationRepositoryInterface" method="loadByCode"/>
+        <resources>
+            <resource ref="Imagineer_Directory::countycode"/>
+        </resources>
+    </route>
+    <route url="/V1/district/code/:code" method="GET">
+        <service class="Imagineer\Directory\Api\DistrictInformationRepositoryInterface" method="loadByCode"/>
+        <resources>
+            <resource ref="Imagineer_Directory::districtcode"/>
+        </resources>
+    </route>
+    <route url="/V1/town/code/:code" method="GET">
+        <service class="Imagineer\Directory\Api\TownInformationRepositoryInterface" method="loadByCode"/>
+        <resources>
+            <resource ref="Imagineer_Directory::towncode"/>
+        </resources>
+    </route>
+    <route url="/V1/county/id/:countyId" method="GET">
+        <service class="Imagineer\Directory\Api\CountyInformationRepositoryInterface" method="loadById"/>
+        <resources>
+            <resource ref="Imagineer_Directory::countyid"/>
+        </resources>
+    </route>
+    <route url="/V1/district/id/:districtId" method="GET">
+        <service class="Imagineer\Directory\Api\DistrictInformationRepositoryInterface" method="loadById"/>
+        <resources>
+            <resource ref="Imagineer_Directory::districtid"/>
+        </resources>
+    </route>
+    <route url="/V1/town/id/:townId" method="GET">
+        <service class="Imagineer\Directory\Api\TownInformationRepositoryInterface" method="loadById"/>
+        <resources>
+            <resource ref="Imagineer_Directory::townid"/>
+        </resources>
+    </route>
+</routes>

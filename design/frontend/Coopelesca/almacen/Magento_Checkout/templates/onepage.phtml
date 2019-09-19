@@ -1,0 +1,353 @@
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $objectManager->create('\Magento\Customer\Model\Session');
+
+$storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+$cart = $objectManager->get('\Magento\Checkout\Model\Cart');  
+
+$itemsCollection = $cart->getQuote()->getItemsCollection();
+$itemsVisible = $cart->getQuote()->getAllItems();
+$items = $cart->getQuote()->getAllItems();
+
+//Almacen actual
+$almacen = "";
+//Lenguaje actual 
+$langAlmacen = "";
+//Almacen con idioma
+$codigoAlmacen = $storeManager->getStore()->getCode();
+$storeManager->setCurrentStore($codigoAlmacen);
+//Almacen e idioma
+$codigosAlmacenSeparados = explode("_", $codigoAlmacen);
+
+if(isset($codigosAlmacenSeparados)){
+    $almacen = $codigosAlmacenSeparados[0];
+    $langAlmacen = $codigosAlmacenSeparados[1];
+}else{
+    $almacen = "T001";
+    $langAlmacen = "es";
+}
+$pos = strpos($langAlmacen, "es");
+// Construccion de string para enviar al webservice de Coopelesca - Metodos envio
+if($customerSession->isLoggedIn()){
+    
+    $id_cuenta = $customerSession->getCustomerId();
+    $cedula = $customerSession->getCustomer()->getCedula();
+
+    $customer = $objectManager->create('Magento\Customer\Model\Customer')->load($id_cuenta);
+
+    $provincia = $customerSession->getProvinciaOrder();
+    $canton = $customerSession->getCantonOrder();
+    $distrito = $customerSession->getDistritoOrder();
+    $poblado = $customerSession->getPobladoOrder();
+    $direccion = $customerSession->getDireccionExactaOrder();
+    
+}else{
+    $id_cuenta = "0";   
+    $cedula = "0";
+    $provincia = "0";
+    $canton = "0";
+    $distrito = "0";
+    $poblado = "0";
+    $direccion = "0";
+}
+
+$postEnvioCredito = '';
+$postEnvioCheckout = '';
+$total = 0;
+
+foreach($itemsVisible as $item) {
+    $total += (double)(((double)trim($item->getData('price')))*((int)trim($item->getData('qty'))));
+    $_product = $item->getProduct()->load($item->getProductId()); 
+    
+    $peso = (is_null($_product->getData('weight')) ? 0 : $_product->getData('weight'));
+    $largo = ( is_null($_product->getCustomAttribute('largo')) ? 0 : $_product->getCustomAttribute('largo') ); 
+    $ancho = ( is_null($_product->getCustomAttribute('ancho')) ? 0 : $_product->getCustomAttribute('ancho') );
+    $alto = ( is_null($_product->getCustomAttribute('alto')) ? 0 : $_product->getCustomAttribute('alto') );
+
+    $precioLineaProducto = number_format($item->getPrice(), 2, '.', '');
+    $descuentoLineaProducto = $item->getFinalPrice() - $item->getPrice();
+    $descuentoLineaProducto = number_format($descuentoLineaProducto, 2, '.', '');
+    $postEnvioCheckout .= '{"Sku":"'.trim($item->getData('sku')).'","IdAlmacen":"'.$almacen.'","Precio":"'.$precioLineaProducto.'","Cantidad":"'.trim($item->getData('qty')).'","Peso":"'.trim($peso).'","Largo":"'.trim($largo).'","Ancho":"'.trim($ancho).'","Alto":"'.trim($alto).'","PorcentajeDescuento":0,"MontoDescuento":0},';
+
+    $postEnvioCredito .= '{"Sku":"'.trim($item->getData('sku')).'","IdAlmacen":"'.$almacen.'","Precio":'.$precioLineaProducto.',"Cantidad":'.trim($item->getData('qty')).',"PorcentajeDescuento":0,"MontoDescuento":0},';
+}
+//<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+//<><><><><><><><><><><><><>DATOS PARA EL FORMULARIO EVERTEC<><><><><><><><><><><><><><><><><><><>
+date_default_timezone_set('America/Costa_Rica');
+$login = "TestCoope1";
+$transactionKey = "CoopeSuCurnTest";
+$amount = $cart->getQuote()->getGrandTotal();
+$type = "AUTH_CAPTURE";
+$invoice_num = date('Ymdhis');
+$sequence = rand(0, 1000000);
+$timestamp = round(microtime(true));
+$fingerprint = $login . '^' . $sequence . '^' . $timestamp . '^' . $amount . '^';
+$hash = hash_hmac('md5', $fingerprint, $transactionKey);
+$currency_code = "188";
+$test_request = "testMode";
+$show_form = 'PAYMENT_FORM';
+//<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><> 
+
+?>
+<div id="checkout" data-bind="scope:'checkout'" class="checkout-container row">
+<div data-bind="scope: 'messages'">
+    <!-- ko if: cookieMessages && cookieMessages.length > 0 -->
+    <div role="alert" data-bind="foreach: { data: cookieMessages, as: 'message' }" class="messages">
+        <div data-bind="attr: {
+            class: 'message-' + message.type + ' ' + message.type + ' message',
+            'data-ui-id': 'message-' + message.type
+        }">
+            <div data-bind="html: message.text"></div>
+        </div>
+    </div>
+    <!-- /ko -->
+    <!-- ko if: messages().messages && messages().messages.length > 0 -->
+    <div role="alert" data-bind="foreach: { data: messages().messages, as: 'message' }" class="messages">
+        <div data-bind="attr: {
+            class: 'message-' + message.type + ' ' + message.type + ' message',
+            'data-ui-id': 'message-' + message.type
+        }">
+            <div data-bind="html: message.text"></div>
+        </div>
+    </div>
+    <!-- /ko -->
+</div>
+    <div id="checkout-loader" data-role="checkout-loader" class="loading-mask" data-mage-init='{"checkoutLoader": {}}'>
+        <div class="loader">
+            <img src="<?= /* @escapeNotVerified */ $block->getViewFileUrl('images/loader-1.gif') ?>"
+                 alt="<?= /* @escapeNotVerified */ __('Loading...') ?>"
+                 style="position: absolute;">
+        </div>
+    </div>
+    <!-- ko template: getTemplate() --><!-- /ko -->
+    <script type="text/x-magento-init">
+        {
+            "#checkout": {
+                "Magento_Ui/js/core/app": <?= /* @escapeNotVerified */ $block->getJsLayout() ?>
+            }
+        }
+    </script>
+    <script>
+        window.checkoutConfig = <?= /* @escapeNotVerified */ $block->getSerializedCheckoutConfig() ?>;
+        // Create aliases for customer.js model from customer module
+        window.isCustomerLoggedIn = window.checkoutConfig.isCustomerLoggedIn;
+        window.customerData = window.checkoutConfig.customerData;
+    </script>
+    <script>
+        require([
+            'mage/url',
+            'Magento_Ui/js/block-loader'
+        ], function(url, blockLoader) {
+            blockLoader("<?= $block->getViewFileUrl('images/loader-1.gif') ?>");
+            return url.setBaseUrl('<?= $block->getBaseUrl() ?>');
+        })
+    </script>
+</div>
+
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Magento_Ui/js/core/app": {
+                "components": {
+                        "messages": {
+                            "component": "Magento_Theme/js/view/messages"
+                        }
+                    }
+                }
+            }
+    }
+</script>
+<form id="cartListCheckout">
+    <input type="hidden" value="5" name="accion" />
+    <input type="hidden" value="<?= $cedula ?>" id="idCuentaCredito" name="idCuentaCredito" />
+    <input type="hidden" value="<?= $almacen ?>" id="idAlmacenCredito" name="idAlmacenCredito" />
+    <input type="hidden" value="<?= base64_encode($postEnvioCheckout) ?>" id="listaArticulosCreditos" name="listaArticulosCreditos" />        
+    <input type="hidden" value="<?= $provincia ?>" id="provinciaMetodoEnvio" name="provinciaMetodoEnvio" />
+    <input type="hidden" value="<?= $canton ?>" id="cantonMetodoEnvio" name="cantonMetodoEnvio" />
+    <input type="hidden" value="<?= $distrito ?>" id="distritoMetodoEnvio" name="distritoMetodoEnvio" />
+    <input type="hidden" value="<?= $poblado ?>" id="pobladoMetodoEnvio" name="pobladoMetodoEnvio" />
+    <input type="hidden" value="<?= $direccion ?>" id="direccionMetodoEnvio" name="direccionMetodoEnvio" />
+</form>
+<form id="isGuestForm">
+    <input type="hidden" id="isUser" name="isUser" value="<?= $id_cuenta ?>" />    
+</form>
+<form id="contratosForm">
+    <input type="hidden" value="8" name="accion" />
+    <input type="hidden" id="idCuentaContrato" name="idCuentaContrato" value="<?= $cedula ?>" />
+</form>
+<form id="listArticles">
+    <input type="hidden" value="7" name="accion" />
+    <input type="hidden" value="" id="metodoEnvioCoopelesca" name="metodoEnvioCoopelesca" />
+    <input type="hidden" value="<?= base64_encode($postEnvioCredito) ?>" id="listaArticulosCreditos" name="listaArticulosCreditos" />
+    <input type="hidden" value="<?= $cedula ?>" id="idCuentaCreditoLista" name="idCuentaCreditoLista" />
+    <input type="hidden" value="<?= $cedula ?>" id="CedulaAsociado" name="CedulaAsociado" />
+    <input type="hidden" value="<?= $almacen ?>" id="idAlmacenCredito" name="idAlmacenCredito" />
+    <input type="hidden" value="<?= $amount ?>" id="montoCompraCredito" name="montoCompraCredito" />
+    <input type="hidden" value="0" id="plazoCredito" name="plazoCredito" />
+    <input type="hidden" value="0" id="primaCredito" name="primaCredito" /> 
+    <input type="hidden" value="0" id="baseFinanciarCredito" name="baseFinanciarCredito" /> 
+    <input type="hidden" value="0" id="tasaAnualCredito" name="tasaAnualCredito" />
+    <input type="hidden" value="0" id="cuotaCredito" name="cuotaCredito" />
+    <input type="hidden" value="0" id="interesMontoCredito" name="interesMontoCredito" />
+    <input type="hidden" value="0" id="totalMontoCredito" name="totalMontoCredito" />
+    <input type="hidden" value="0" id="contratoCredito" name="contratoCredito" />  
+    <input type="hidden" value="0" id="costoMontoCredito" name="costoMontoCredito" />  
+    
+
+    <input type="hidden" value="FIN" id="tipoCompra" name="tipoCompra" />
+    <input type="hidden" value="<?= $cedula ?>" id="idCedulaCredito" name="idCedulaCredito" />
+    <input type="hidden" value="" id="autorizadoRetirarCredito" name="autorizadoRetirarCredito" />             
+    <input type="hidden" value="0" id="idTipoEntregaCredito" name="idTipoEntregaCredito" />
+    <input type="hidden" value="0" id="costoEntregaCredito" name="costoEntregaCredito" /> 
+    <input type="hidden" value="0" id="montoDescuentoCredito" name="montoDescuentoCredito" />            
+    <input type="hidden" value="0" id="boleta_cheque" name="boleta_cheque" />            
+    <input type="hidden" value="0" id="codigo_autorizacion" name="codigo_autorizacion" />            
+</form>
+<form id="dataOrder">
+    <input type="hidden" value="9" name="accion" />
+    <input type="hidden" value="0" id="envioOrder" name="envioOrder" />
+    <input type="hidden" value="<?= base64_encode($postEnvioCredito) ?>" id="listaOrder" name="listaOrder" />
+    <input type="hidden" value="<?= $cedula ?>" id="cedulaOrder" name="cedulaOrder" />
+    <input type="hidden" value="<?= $almacen ?>" id="almacenOrder" name="almacenOrder" />
+    <input type="hidden" value="<?= $langAlmacen ?>" id="idiomaOrder" name="idiomaOrder" />
+    <input type="hidden" value="<?= $amount ?>" id="montoOrder" name="montoOrder" />
+    <input type="hidden" value="<?= $amount ?>" id="rawTotal" name="rawTotal" />
+    <input type="hidden" value="0" id="plazoOrder" name="plazoOrder" />
+    <input type="hidden" value="0" id="primaOrder" name="primaOrder" /> 
+    <input type="hidden" value="0" id="baseFinanciaOrder" name="baseFinanciaOrder" /> 
+    <input type="hidden" value="0" id="tasaOrder" name="tasaOrder" />
+    <input type="hidden" value="0" id="cuotaOrder" name="cuotaOrder" />
+    <input type="hidden" value="0" id="interesMontoOrder" name="interesMontoOrder" />
+    <input type="hidden" value="0" id="totalMontoOrder" name="totalMontoOrder" />
+    <input type="hidden" value="0" id="contratoOrder" name="contratoOrder" />  
+    <input type="hidden" value="0" id="costoMontoOrder" name="costoMontoOrder" />  
+    
+
+    <input type="hidden" value="0" id="tipoCompraOrder" name="tipoCompraOrder" />
+    <input type="hidden" value="" id="autorizadoRetirarOrder" name="autorizadoRetirarOrder" />             
+    <input type="hidden" value="0" id="idTipoEntregaOrder" name="idTipoEntregaOrder" />
+    <input type="hidden" value="0" id="costoEntregaOrder" name="costoEntregaOrder" /> 
+    <input type="hidden" value="0" id="montoDescuentoOrder" name="montoDescuentoOrder" /> 
+
+    <input type="hidden" value="<?= $provincia ?>" id="provinciaOrder" name="provinciaOrder" /> 
+    <input type="hidden" value="<?= $canton ?>" id="cantonOrder" name="cantonOrder" /> 
+    <input type="hidden" value="<?= $distrito ?>" id="distritoOrder" name="distritoOrder" /> 
+    <input type="hidden" value="<?= $poblado ?>" id="pobladoOrder" name="pobladoOrder" />  
+    <input type="hidden" value="<?= $direccion ?>" id="direccionOrder" name="direccionOrder" />                 
+</form>
+<div id="seleccionMetodoPago">
+
+    <h2><?= ( $pos !== false ) ? "¡Aproveche!" : "Deal!" ?></h2>
+    <div>
+        <article>
+            <?php 
+            if($pos !== false){ ?>
+                <p>Ll&eacute;velo con las mejores facilidades de financiamiento y la mejor tasa de inter&eacute;s.</p>
+                <p>Compre hoy y pague despu&eacute;s con el mejor cr&eacute;dito <span>COOPELESCA ALMACENES</span>.</p>
+           <?php  }else{ ?>
+                <p>The best financing facilities and the best interest rate.</p>
+                <p>Buy today and pay later with the best credit <span>COOPELESCA ALMACENES</span>.</p>
+          <?php  } ?>
+                        
+            <div id="wsInfoCredito"></div>
+
+            <div id="botonesPago">
+                <button id="btnSolicitaCredito" type="button" class="action primary checkout">
+                    <?php if($pos !== false){ ?>
+                        Solicitar cr&eacute;dito
+                   <?php  }else{ ?>
+                        Apply credit
+                  <?php   } ?>                    
+                </button>
+                <form id="bcrForm" method="POST" action="https://evertecepstest.net/PayGate/Colector">    
+                    <input type="hidden" value='<?= $login ?>' id="x_login" name="x_login" />                   
+                    <input type="hidden" value='1.00' id="x_amount" name="x_amount" /> 
+                    <input type="hidden" value='<?= $type ?>' id="x_type" name="x_type" />
+                    <input type="hidden" value='<?= $invoice_num ?>' id="x_invoice_num" name="x_invoice_num" />
+                    <input type="hidden" value='<?= $sequence ?>' id="x_fp_sequence" name="x_fp_sequence" />
+                    <input type="hidden" value='<?= $timestamp ?>' id="x_fp_timestamp" name="x_fp_timestamp" />
+                    <input type="hidden" value='<?= $hash ?>' id="x_fp_hash" name="x_fp_hash" />
+                    <input type="hidden" value='<?= $currency_code ?>' id="x_currency_code" name="x_currency_code" />
+                    <input type="hidden" value='<?= $test_request ?>' id="x_test_request" name="x_test_request" />
+                    <div class="primary">
+                        <button data-role="review-save"
+                                type="submit"                        
+                                id="pagoContado"
+                                class="action primary checkout">
+                            <?php if($pos !== false){ ?>
+                                Pagar de contado
+                           <?php  }else{ ?>
+                                Pay in cash
+                          <?php   } ?>                               
+                        </button>
+                    </div>
+                </form>
+            </div>    
+        </article>
+    </div>    
+</div>
+
+<div id="calculadoraDeCredito">
+
+<div class="row">
+    <div class="col-lg-6 listadoCreditoDetalle hideSm">
+        <h2 id="tituloDetalleCarritoCalculadora"><?= ( $pos !== false ) ? "Detalle del carrito" : "Cart detail" ?></h2>                            
+        <?php echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('cart_detail')->toHtml();?>               
+    </div>
+    <div class="col-lg-4">
+    <h2 id="tituloCalculoCredito"><?= ( $pos !== false ) ? "Calculadora de crédito" : "Credit estimator" ?></h2>
+    <div>
+        <p class="etiquetaCalculadora resalta col-lg-5 col-md-5 col-sm-5 col-xs-5"><?= ( $pos !== false ) ? "Precio" : "Price" ?></p>
+        <p class="etiquetaCalculadora resalta col-lg-5 col-md-5 col-sm-5 col-xs-5">&cent;&nbsp;<span id="precioTotalCredito"><?= number_format($total, 2, '.', ',') ?></span> i.v.i</p>
+    </div>
+    <div>
+        <p class="etiquetaCalculadora col-lg-5 col-md-5 col-sm-5 col-xs-5"><?= ( $pos !== false ) ? "Prima" : "Advance payment" ?></p>
+        <p class="etiquetaCalculadora col-lg-5 col-md-5 col-sm-5 col-xs-5"><i id="editar">&nbsp;</i>
+         &cent;<input type="text" name="primaCreditoCalculadora" id="primaCreditoCalculadora" value="" />
+        </p>
+    </div>    
+    <hr />
+    <div><p class="etiquetaCalculadora col-lg-5 col-md-5 col-sm-5 col-xs-5"><?= ( $pos !== false ) ? "Base a financiar" : "Finance base" ?></p>
+        <p class="etiquetaCalculadora col-lg-5 col-md-5 col-sm-5 col-xs-5">&cent;&nbsp;<span id="baseFinanciar">0</span></p>
+    </div>
+    <div><p class="etiquetaCalculadora col-lg-5 col-md-5 col-sm-5 col-xs-5"><?= ( $pos !== false ) ? "Tasa anual" : "Annual rate" ?></p>
+        <p class="etiquetaCalculadora col-lg-5 col-md-5 col-sm-5 col-xs-5"><span id="tasaAnualFinanciar">0</span>%</p></div>
+    <div><p class="etiquetaCalculadora col-lg-5 col-md-5 col-sm-5 col-xs-5"><?= ( $pos !== false ) ? "Plazo" : "Period" ?></p>
+         <p class="etiquetaCalculadora col-lg-5 col-md-5 col-sm-5 col-xs-5">
+            <select id="plazosFinanciar"><option><?= ( $pos !== false ) ? "Sin plazos" : "No period" ?></option></select>
+        </p></div>
+    <div><p class="etiquetaCalculadora resalta col-lg-5 col-md-5 col-sm-5 col-xs-5"><?= ( $pos !== false ) ? "Cuota" : "Fee" ?></p>
+        <p class="etiquetaCalculadora resalta col-lg-5 col-md-5 col-sm-5 col-xs-5">&cent;&nbsp;<span id="cuotaFinanciar">0</span></p></div>
+    <div><p class="etiquetaCalculadora col-lg-5 col-md-5 col-sm-5 col-xs-5"><?= ( $pos !== false ) ? "Interés" : "Interest" ?></p><p class="etiquetaCalculadora col-lg-5 col-md-5 col-sm-5 col-xs-5">&cent;&nbsp;<span id="interesFinanciar">0</span></p></div>
+    <hr />
+    <div><p class="etiquetaCalculadora resalta col-lg-5 col-md-5 col-sm-5 col-xs-5">Total</p>
+        <p class="etiquetaCalculadora resalta col-lg-5 col-md-5 col-sm-5 col-xs-5">&cent;&nbsp;<span id="totalFinanciar">0</span></p>
+    </div>
+    <div class="espacioBottom"><p class="etiquetaCalculadora col-lg-3 col-md-3 col-sm-3 col-xs-3"><?= ( $pos !== false ) ? "Contrato" : "Contract" ?></p>
+         <p class="etiquetaCalculadora col-lg-7 col-md-7 col-sm-7 col-xs-7">
+            <select id="contratoFinancia"><option><?= ( $pos !== false ) ? "Sin contratos" : "No contracts" ?></option></select>
+         </p></div>
+    <div id="mensajeCalculadoraCredito"></div>
+    <button id="calcularCompraCredito">
+        <?= ( $pos !== false ) ? "Calcular" : "Estimate" ?>
+    </button>
+    <button id="editarCompraCredito">
+        <?= ( $pos !== false ) ? "Editar carrito" : "Edit cart" ?>
+    </button>
+    <button id="confirmarCompraCredito">
+        <?= ( $pos !== false ) ? "Confirmar compra" : "Confirm order" ?>
+    </button>
+    <a id="terminosCondicionesCalculadora" href="https://coopelesca.com/terminos-y-condiciones/" target="_blank"><?= ( $pos !== false ) ? "Términos y condiciones de la compra" : "Cart terms and conditions" ?></a>
+    </div>  
+    <div class="col-lg-6 listadoCreditoDetalle hideLg">
+        <h2 id="tituloDetalleCarritoCalculadora"><?= ( $pos !== false ) ? "Detalle del carrito" : "Cart detail" ?></h2>                            
+        <?php echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('cart_detail')->toHtml();?>               
+    </div>  
+</div>                            
+    
+</div>
+    
+</div>
+<script src="<?= $block->getViewFileUrl('Coopelesca_IngresoAsociados::js/carga-opciones-envio.js'); ?>" ></script>
+<script src="<?= $block->getViewFileUrl('Coopelesca_IngresoAsociados::js/acciones-asociados.js'); ?>" ></script>

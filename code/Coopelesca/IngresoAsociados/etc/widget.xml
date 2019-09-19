@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:ingresoasociados:Magento_Widget:etc/widget.xsd">
+	<widget class="Coopelesca\IngresoAsociados\Block\Widget\Ingreso" id="coopelesca_ingresoasociados_ingreso">
+		<label>Ingreso de asociados</label>
+		<description>Ingreso de asociados a la agencia virtual de Coopelesca</description>
+	</widget>
+</widgets>
+

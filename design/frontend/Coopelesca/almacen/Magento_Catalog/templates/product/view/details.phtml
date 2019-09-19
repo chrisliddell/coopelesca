@@ -1,0 +1,60 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile ?>
+<?php 
+    $om = \Magento\Framework\App\ObjectManager::getInstance();  
+    $resolver = $om->get('Magento\Framework\Locale\Resolver');
+    $langCode = $resolver->getLocale();
+    $pos = strpos($langCode, "es");
+?>
+<div class="col-lg-2 bannerOfertas hideSm">
+        <?php echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('banner')->toHtml();?>
+    </div>
+<?php
+if ($detailedInfoGroup = $block->getGroupChildNames('detailed_info', 'getChildHtml')):?>
+    <div class="product info detailed">    
+        <?php $layout = $block->getLayout(); ?>
+        <div class="product data items" data-mage-init='{"tabs":{"openedState":"active"}}'>
+            <?php foreach ($detailedInfoGroup as $name):?>
+                <?php
+                    $html = $layout->renderElement($name);
+                    if (!trim($html)) {
+                        continue;
+                    }
+                    $alias = $layout->getElementAlias($name);
+                    $label = $block->getChildData($alias, 'title');
+
+                     if( $alias == "product.info.description"){
+                        continue;
+                     }
+                ?>
+                <div class="data item title"
+                     aria-labeledby="tab-label-<?= /* @escapeNotVerified */ $alias ?>-title"
+                     data-role="collapsible" id="tab-label-<?= /* @escapeNotVerified */ $alias ?>">
+                    <a class="data switch"
+                       tabindex="-1"
+                       data-toggle="switch"
+                       href="#<?= /* @escapeNotVerified */ $alias ?>"
+                       id="tab-label-<?= /* @escapeNotVerified */ $alias ?>-title">
+                        <?= /* @escapeNotVerified */ $label ?>
+                    </a>
+                </div>
+                <div class="data item content" id="<?= /* @escapeNotVerified */ $alias ?>" data-role="content">
+                    <?= /* @escapeNotVerified */ $html ?>
+                </div>
+            <?php endforeach;?>
+        </div>
+    </div>
+<?php endif; ?>
+<div class="col-lg-2 col-sm-12 col-md-12 bannerOfertas hideLg">
+<?php 
+if((!($pos === false))){
+    echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('banner-horizontal')->toHtml();
+}else{ 
+    echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('banner-horizontal-en')->toHtml();
+} ?>
+</div>
